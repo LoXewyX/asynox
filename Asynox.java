@@ -372,27 +372,28 @@ public class Asynox {
 
       if (clazz == Integer.class)
         return (T) Integer.valueOf(input);
-      else if (clazz == Double.class)
+      if (clazz == Double.class)
         return (T) Double.valueOf(input);
-      else if (clazz == Boolean.class)
+      if (clazz == Boolean.class)
         return (T) Boolean.valueOf(input);
-      else if (clazz == Long.class)
+      if (clazz == Long.class)
         return (T) Long.valueOf(input);
-      else if (clazz == Float.class)
+      if (clazz == Float.class)
         return (T) Float.valueOf(input);
-      else if (clazz == Character.class)
+      if (clazz == Character.class)
         if (input.length() == 1)
           return (T) Character.valueOf(input.charAt(0));
-        else
-          throw new IllegalArgumentException(
-              "Input must be a single character.");
-      else if (clazz == Short.class)
+        else {
+          shutdown();
+          throw new IllegalArgumentException("Input must be a single character.");
+        }
+      if (clazz == Short.class)
         return (T) Short.valueOf(input);
-      else
-        return (T) input;
+
+      return (T) input;
     } catch (IOException | IllegalArgumentException e) {
-      e.printStackTrace();
       shutdown();
+      e.printStackTrace();
     }
 
     return null;
@@ -434,7 +435,7 @@ public class Asynox {
       if (each > 0)
         return new int[0];
       size = inclusive ? (from - to) / Math.abs(each) + 1
-                       : (from - to - 1) / Math.abs(each) + 1;
+          : (from - to - 1) / Math.abs(each) + 1;
     } else {
       if (each < 0)
         return new int[0];
@@ -445,10 +446,9 @@ public class Asynox {
 
     int[] nums = new int[size];
     for (int i = 0, value = from;
-         isDescending    ? inclusive ? value >= to : value > to
-             : inclusive ? value <= to
-                         : value < to;
-         i++, value += each)
+      isDescending ? inclusive ? value >= to : value > to
+      : inclusive ? value <= to : value < to;
+      i++, value += each)
       nums[i] = value;
 
     return nums;
@@ -618,8 +618,8 @@ public class Asynox {
 
         System.arraycopy(buffer, 0, fileData, (int) start, bufferSize);
       } catch (IOException e) {
-        e.printStackTrace();
         shutdown();
+        e.printStackTrace();
       }
     }
   }
@@ -685,8 +685,8 @@ public class Asynox {
         file.seek(position);
         file.write(data);
       } catch (IOException e) {
-        e.printStackTrace();
         shutdown();
+        e.printStackTrace();
       }
     }
   }
@@ -758,8 +758,8 @@ public class Asynox {
       if (!Files.exists(p))
         Files.createDirectory(p);
     } catch (IOException e) {
-      e.printStackTrace();
       shutdown();
+      e.printStackTrace();
     }
   }
 
@@ -778,8 +778,8 @@ public class Asynox {
           try {
             Files.delete(_p);
           } catch (IOException e) {
-            e.printStackTrace();
             shutdown();
+            e.printStackTrace();
           }
         });
       } else
@@ -866,7 +866,7 @@ public class Asynox {
                 sb.append("[FAIL] ")
                   .append(method.getName())
                   .append(": ")
-                  .append(e.getMessage())
+                  .append(e.getCause().getMessage())
                   .toString()));
             sb.setLength(0);
           }
